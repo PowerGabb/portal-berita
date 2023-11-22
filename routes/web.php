@@ -1,45 +1,54 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CategoriesController;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CommentController;
 
 Route::get('/', [DashboardController::class,
 'home'])->name('home');
-
-
 Route::get('/about', [DashboardController::class,
 'about'])->name('about');
+Route::middleware('auth')->group(function () {
 
-Route::get('/categories/categories',[CategoriesController::class,
+//Create Data Category
+Route::get('/categories/categories',
+[CategoriesController::class,
 'create'])->name('category.create');
-
 Route::post('/categories', [CategoriesController::class,
 'store'])->name('category.store');
 
+//Read Data Category
 Route::get('/categories', [CategoriesController::class,
 'index'])->name('category.index');
-
 //Update Data Category
-Route::get('/categories/{id}/edit', [CategoriesController::class,
-'edit'])->name('category.edit');
-
+Route::get('/categories/{id}/edit',
+[CategoriesController::class, 'edit'])->name('category.edit');
 Route::put('/categories/{id}', [CategoriesController::class,
 'update'])->name('category.update');
-
-Route::delete('/categories/{id}', [CategoriesController::class,
+//Delete Data Category
+Route::delete('/categories/{id}',
+[CategoriesController::class,
 'destroy'])->name('category.destroy');
+//Profile
+Route::get('/profile', [ProfileController::class,
+'edit'])->name('profile.edit');
+Route::put('/profile/{id}', [ProfileController::class,
+'update'])->name('profile.edit');
+});
+
+Route::get('/categories/{id}', [CategoriesController::class,
+'show'])->name('category.show');
+Route::get('/news/detail/{id}', [NewsController::class,
+'detail'])->name('news.detail');
+
+Route::post('/comment/{news_id}', [CommentController::class,
+'store'])->name('comment.store');
 
 
+//CRUD News
+Route::resource('news', NewsController::class);
+Auth::routes();
+Route::get('/home', [App\Http\Controllers\HomeController::class,
+'index'])->name('home');
